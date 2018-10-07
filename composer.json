@@ -1,0 +1,23 @@
+{
+    "name": "bugradayi/pay-labs",
+    "description": "Payment Gateway",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+          "name": "Buğra Göçer",
+          "email": "bugra.gocer@gmail.com",
+          "homepage": "https://anki.com.tr",
+          "role": "Software Engineer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+      "artisaninweb/laravel-soap": "0.3.0.9"
+    },
+  "autoload":{
+    "psr-4":{
+      "PayLabs\\" : "src"
+    }
+  }
+}
