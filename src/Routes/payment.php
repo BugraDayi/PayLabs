@@ -6,11 +6,12 @@
  * Time: 16:08
  */
 
-use App\PayLabs\Facades\PayLabs;
 
-Route::middleware(['api'])->prefix('api/payment')->group(function () {
+$defaultOptions = [
+    'prefix' => 'payment',
+    'namespace' => '\PayLabs\Controllers',
+];
 
-    Route::post('test',function (){
-        return PayLabs::test();
-    });
+Route::group($defaultOptions,function () {
+    Route::get('pay', 'PaymentController@pay');
 });

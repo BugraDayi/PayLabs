@@ -25,7 +25,7 @@ class PayLabsServiceProvider extends ServiceProvider
     public function register(){
 
         $this->mergeConfigFrom(
-            __DIR__ . '/config.php',
+            __DIR__ . '/../config/config.php',
             'PaymentServices'
         );
 

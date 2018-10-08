@@ -2,7 +2,9 @@
 
 namespace PayLabs\Payment;
 
-use PayLabs\TURK\TurkPaymentService;
+use PayLabs\Models\CreditCard;
+use PayLabs\Models\Transaction;
+use PayLabs\Services\TURK\TurkPaymentService;
 use Illuminate\Support\Collection;
 
 class PayLabs
@@ -28,31 +30,39 @@ class PayLabs
         }
     }
 
-    public function makePayment(Collection $transaction,Collection $creditCard,$userToken){
+    public function makePayment(Transaction $transaction,CreditCard $creditCard,$urls){
 
-        $new_transaction = $this->createTransaction($transaction->merge(['user_token' => $userToken]));
+        $this->createTransaction($transaction,$creditCard->holder,$creditCard->number);
+        $this->addURL($urls,$transaction);
 
-        $paymentResponse = $this->paymentService->pay($new_transaction,$creditCard);
+        $paymentResponse = $this->paymentService->pay($transaction,$creditCard);
 
-        if($paymentResponse->result == true && $creditCard->save == true){
+        if($paymentResponse->getResult() == true && $creditCard->save == true){
             $creditCard->save();
         }
 
         return $paymentResponse;
     }
 
-    public function createTransaction($transactionParams){
-        return Transaction::create([
-            $transactionParams
-        ]);
+    public function createTransaction($transaction,$holder,$digits){
+        $transaction->approve_token = bcrypt(str_random(10).time().str_random(10).$transaction->user_token);
+        $transaction->transaction_token = 'txid'.str_random(10).time().str_random(10);
+        $transaction->holder = $holder;
+        $transaction->digits = substr($digits,0,4)."/".substr($digits,0,-4);
+        $transaction->save();
     }
-
 
     public function saveCreditCard($creditCardParams){
 
         if($this->validateCreditCard($creditCardParams)){
             return CreditCard::create($creditCardParams);
         }
+    }
+
+    private function addURL($urls,Transaction $transaction){
+        $transaction->paymentURL = $urls['paymentURL'];
+        $transaction->successURL = $urls['successURL'].$transaction->approve_token;
+        $transaction->failURL = $urls['failURL'].$transaction->transaction_token;
     }
 
     private function validateCreditCard(){

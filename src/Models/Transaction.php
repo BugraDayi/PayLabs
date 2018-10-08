@@ -12,7 +12,7 @@ class Transaction extends Model
         'description',
         'installment',
         'amount',
-        '3d',
+        'threeds',
         'approve_token',
         'transaction_token',
         'service',
@@ -20,12 +20,7 @@ class Transaction extends Model
         'digits',
         'user_token',
         'approved',
-        'commission_percentage'];
+        'service_token',
+        'ip'];
 
-    protected $guarded = [
-        'user_token',
-        'amount',
-        'approve_token',
-        'transaction_token'
-    ];
 }
