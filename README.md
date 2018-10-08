@@ -1,10 +1,12 @@
 # PayLabs
 
-PayLabs is will comprise many payment gateway services 
+Such a good payment gateway
 
 ## Supported Payment Gateways
 
-**TurkPos** implemented (only payment)
-**Iyzico** coming soon
+|        |Payment|Refund|Transfer
+|--------|-------|-----|----|
+|TurkPos |`Implemented`||`Coming Soon`
+|Iyzico  |`Coming Soon`||
 
 > **Note:** Under developing therefore I don't suggest to use
