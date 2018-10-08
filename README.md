@@ -16,13 +16,12 @@ also need to add PayLabs\Facades to your `config/app.php` aliases array:
     'PayLabs' => PayLabs\Facades\PayLabs::class
 
   
-  
 ## Supported Payment Gateways  
   
-|        |Payment|Refund|Transfer  
-|--------|-------|-----|----|  
-|TurkPos |`Implemented`||`Coming Soon`  
-|Iyzico  |`Coming Soon`||  
-|Garanti  |`Coming Soon`||  
+|        |Payment|Refund|Transfer|Subscription
+|--------|-------|-----|----|----|
+|TurkPos |`Implemented`|`Coming soon`|`Implemented`  
+|Iyzico  |`Coming Soon`| | | `Coming Soon`  
+|Garanti  |`Coming Soon`| `-`| `-` 
   
 > **Note:** Under developing therefore I don't suggest to use

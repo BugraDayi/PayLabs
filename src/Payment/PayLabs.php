@@ -36,10 +36,10 @@ class PayLabs
     }
 
     public function createTransaction($transaction,$holder,$digits){
-        $transaction->approve_token = bcrypt(str_random(10).time().str_random(10).$transaction->user_token);
+        $transaction->approve_token = rand(100,999999).str_random(16).time().str_random(16).rand(100,999999);
         $transaction->transaction_token = 'txid'.str_random(10).time().str_random(10);
         $transaction->holder = $holder;
-        $transaction->digits = substr($digits,0,4)."/".substr($digits,0,-4);
+        $transaction->digits = substr($digits,0,4);
         $transaction->save();
     }
 

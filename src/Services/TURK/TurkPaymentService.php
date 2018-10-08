@@ -18,6 +18,8 @@ use PayLabs\Services\TURK\SOAP\SHA2B64;
 use PayLabs\Services\TURK\SOAP\SHA2B64Response;
 use PayLabs\Services\TURK\SOAP\TP_Islem_Odeme;
 use PayLabs\Services\TURK\SOAP\TP_Islem_OdemeResponse;
+use PayLabs\Services\TURK\SOAP\TP_Ozel_Oran_Liste;
+use PayLabs\Services\TURK\SOAP\TP_Ozel_Oran_ListeResponse;
 
 class TurkPaymentService implements PaymentInterface
 {
@@ -49,6 +51,7 @@ class TurkPaymentService implements PaymentInterface
                     TP_Islem_OdemeResponse::class,
                 ]);
         });
+
         $paymentResponse = $this->soapWrapper->call('Payment.TP_Islem_Odeme', [
             new TP_Islem_Odeme($this->G,$this->sanalPosID,$this->GUID,
                 $creditCard->holder,
@@ -65,17 +68,16 @@ class TurkPaymentService implements PaymentInterface
                 $calculatedPrices['amount'],
                 $calculatedPrices['total'],
                 $hashResponse->getSHA2B64Result(),
-                $transaction->order_id,
+                $transaction->transaction_token,
                 $transaction->ip,
                 $transaction->paymentURL,
                 '','','','','')
         ]);
-
         unset($creditCard);
 
         $paymentResult = $paymentResponse->getTPIslemOdemeResult();
         if((int)$paymentResult->Sonuc == 1){
-            $transaction->update(["service_token" => $paymentResult->Islem_ID,"service"=>$this->service]);
+            Transaction::where('transaction_token',$transaction->transaction_token)->update(["service_token" => $paymentResult->Islem_ID,"service"=>$this->service]);
             return new PaymentResponse(true,str_replace(" ", NULL, $paymentResult->UCD_URL),$paymentResult->Islem_ID);
         }
 
@@ -89,7 +91,7 @@ class TurkPaymentService implements PaymentInterface
 
         $calculatedTotal = str_replace(".", ",", number_format($amount,2));
         $calculatedAmount = str_replace(".", ",",
-            number_format($amount - ($amount * $this->commissionPercentage) ,2));
+            sprintf("%0.2f",$amount));
 
         return ['amount' => $calculatedAmount,
                 'total' => $calculatedTotal];
@@ -105,6 +107,7 @@ class TurkPaymentService implements PaymentInterface
                     SHA2B64Response::class,
                 ]);
         });
+
         return $this->soapWrapper->call('Hash.SHA2B64', [
             new SHA2B64($this->G->CLIENT_CODE.
                 $this->GUID.
@@ -114,14 +117,29 @@ class TurkPaymentService implements PaymentInterface
                 $calculatedPrices['total'].
                 $transaction->transaction_token.
                 $transaction->failURL.
-                $transaction->transaction_token.
-                $transaction->successURL.
-                $transaction->approve_token)
+                $transaction->successURL)
         ]);
     }
 
+    private function getOran(){
+        $this->soapWrapper->add('Payment', function ($service) {
+            $service
+                ->wsdl("https://dmzws.ew.com.tr/turkpos.ws/service_turkpos_prod.asmx?wsdl")
+                ->trace(true)
+                ->classmap([
+                    TP_Ozel_Oran_Liste::class,
+                    TP_Ozel_Oran_ListeResponse::class,
+                ]);
+        });
+        $response = $this->soapWrapper->call('Payment.TP_Ozel_Oran_Liste', [
+            new TP_Ozel_Oran_Liste($this->GUID,$this->G)
+        ]);
+
+        dd($response->getTPOzelOranListeResult());
+    }
+
     private function setOptions(){
-        $this->G = new G(config('PaymentServices.TURK.clientCode'),'PaymentServices.TURK.clientUsername','PaymentServices.TURK.clientPassword');
+        $this->G = new G(config('PaymentServices.TURK.clientCode'),config('PaymentServices.TURK.clientUsername'),config('PaymentServices.TURK.clientPassword'));
         $this->TurkWSDL = config('PaymentServices.TURK.baseUrl');
         $this->GUID = config('PaymentServices.TURK.guid');
         $this->sanalPosID = config('PaymentServices.TURK.posId');

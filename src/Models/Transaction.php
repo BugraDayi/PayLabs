@@ -23,4 +23,10 @@ class Transaction extends Model
         'service_token',
         'ip'];
 
+
+    public function getFillable()
+    {
+        return $this->fillable;
+    }
+
 }

@@ -6,7 +6,7 @@
  * Time: 18:06
  */
 
-namespace PayLabs\Transfer\TURK\SOAP;
+namespace PayLabs\Services\TURK\SOAP;
 
 class TL_Transfer
 {

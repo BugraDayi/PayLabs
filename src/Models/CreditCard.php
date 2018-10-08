@@ -22,7 +22,7 @@ class CreditCard extends Model
         return decrypt($value);
     }
 
-    public function getTokenAttribute($value)
+    public function getServiceTokenAttribute($value)
     {
         return decrypt($value);
     }
@@ -72,8 +72,8 @@ class CreditCard extends Model
         $this->attributes['cvc'] = encrypt($value);
     }
 
-    public function setTokenAttribute($value)
+    public function setServiceTokenAttribute($value)
     {
-        $this->attributes['cvc'] = encrypt($value);
+        $this->attributes['service_token'] = encrypt($value);
     }
 }

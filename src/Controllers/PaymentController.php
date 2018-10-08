@@ -15,7 +15,7 @@ class PaymentController extends Controller
     public function pay(Request $request){
 
         $transaction = new Transaction();
-        $transaction->amount = 4;
+        $transaction->amount = 80;
         $transaction->description = 'test';
         $transaction->installment = 1;
         $transaction->threeds = 1;
@@ -23,11 +23,7 @@ class PaymentController extends Controller
         $transaction->ip = $request->ip();
 
         $creditCard = new CreditCard();
-        $creditCard->holder = "test";
-        $creditCard->number = '1234123412341234';
-        $creditCard->year = "12";
-        $creditCard->month = "12";
-        $creditCard->ccv = "123";
+
 
         $urls = [
             'paymentURL' => 'test',

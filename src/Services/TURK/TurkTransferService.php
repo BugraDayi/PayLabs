@@ -6,15 +6,18 @@
  * Time: 12:18
  */
 
-namespace PayLabs\Transfer\TURK;
+namespace PayLabs\Services\TURK;
 
 
+use Artisaninweb\SoapWrapper\SoapWrapper;
 use PayLabs\Models\Transaction;
 use PayLabs\Models\Transfer;
+use PayLabs\Services\TURK\SOAP\G;
+use PayLabs\Services\TURK\SOAP\TL_Transfer;
+use PayLabs\Services\TURK\SOAP\TL_TransferResponse;
 use PayLabs\Transfer\TransferInterface;
 use PayLabs\Transfer\TransferResponse;
-use PayLabs\Transfer\TURK\SOAP\TL_Transfer;
-use PayLabs\Transfer\TURK\SOAP\TL_TransferResponse;
+
 
 class TurkTransferService implements TransferInterface
 {
@@ -22,7 +25,6 @@ class TurkTransferService implements TransferInterface
     protected $transferWSDL;
     protected $soapWrapper;
     protected $G;
-    protected $TurkWSDL;
     protected $commissionPercentage;
     private $service;
 
@@ -34,7 +36,6 @@ class TurkTransferService implements TransferInterface
 
     public function transfer($cardNumber, $description, $amount, $commissionPercentage = NULL, $transaction_token = NULL)
     {
-
         if (!is_null($commissionPercentage)) {
             $amount = $amount - ($amount * $commissionPercentage);
         }
@@ -48,6 +49,7 @@ class TurkTransferService implements TransferInterface
                     TL_TransferResponse::class,
                 ]);
         });
+
         $transferResponse = $this->soapWrapper->call('Transfer.TL_Transfer', [
             new TL_Transfer($this->G, $cardNumber, $description, $amount)
         ]);
@@ -62,6 +64,7 @@ class TurkTransferService implements TransferInterface
                 'card_number' => $cardNumber,
                 'description' => $description,
                 'amount' => $amount,
+                'transfer_token' => $transferResponse->getTLTransferResult()->Yukleme_Dekont_ID . '/' . $transferResponse->getTLTransferResult()->Harcama_Dekont_ID,
                 'transaction_token' => $transaction_token
             ]);
             return new TransferResponse(true, $transaction_token);
@@ -79,8 +82,9 @@ class TurkTransferService implements TransferInterface
 
     private function setOptions()
     {
-        $this->G = new G(config('PaymentServices.TURK.clientCode'), 'PaymentServices.TURK.clientUsername', 'PaymentServices.TURK.clientPassword');
+        $this->G = new G(config('PaymentServices.TURK.clientCode'), config('PaymentServices.TURK.clientUsername'), config('PaymentServices.TURK.clientPassword'));
         $this->transferWSDL = config('PaymentServices.TURK.transferUrl');
         $this->service = "TURK";
+        $this->soapWrapper = new SoapWrapper();
     }
 }
