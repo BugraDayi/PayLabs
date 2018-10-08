@@ -20,6 +20,8 @@ class PayLabsServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/Routes/card.php');
         $this->loadRoutesFrom(__DIR__ . '/Routes/payment.php');
         $this->loadRoutesFrom(__DIR__ . '/Routes/transfer.php');
+
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
     public function register(){

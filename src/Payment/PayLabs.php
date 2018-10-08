@@ -12,22 +12,13 @@ class PayLabs
     protected $paymentService;
     protected $paymentServices;
 
-    public function test(){
-
-        return config('PaymentServices.TURK');
-    }
-
     public function __construct($paymentService = NULL)
     {
         $this->paymentServices = new Collection([
             array_keys(config('PaymentServices'))
         ]);
 
-        if(!is_null($paymentService)){
-            $this->paymentService = new TurkPaymentService();
-        }else{
-            $this->activatePaymentService($paymentService);
-        }
+        $this->activatePaymentService($paymentService);
     }
 
     public function makePayment(Transaction $transaction,CreditCard $creditCard,$urls){
@@ -71,15 +62,14 @@ class PayLabs
 
     private function activatePaymentService($paymentService){
 
-        if($this->paymentServices->contains($paymentService)){
-            switch ($paymentService){
+        switch ($paymentService){
+            case 'TURK':
+                $this->paymentService = new TurkPaymentService();
+                break;
 
-                default:
-                    $this->paymentService = new TurkPaymentService();
-                    break;
-            }
-        }else{
-            $this->paymentService = new TurkPaymentService();
+            default:
+                $this->paymentService = new TurkPaymentService();
+            break;
         }
     }
 }
