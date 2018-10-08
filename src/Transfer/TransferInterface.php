@@ -11,7 +11,7 @@ namespace PayLabs\Transfer;
 
 interface TransferInterface
 {
+    public function transfer($cardNumber,$description,$amount,$commissionPercentage = NULL,$transaction_token = NULL);
 
-
-
+    public function check($transaction_token);
 }
