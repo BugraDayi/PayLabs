@@ -79,7 +79,10 @@ class TurkPaymentService implements PaymentInterface
             return new PaymentResponse(true,str_replace(" ", NULL, $paymentResult->UCD_URL),$paymentResult->Islem_ID);
         }
 
-        return new PaymentResponse(false,str_replace(' ',NULL,$transaction->failURL),$transaction->transaction_token);
+        return new PaymentResponse(false
+            ,str_replace(' ',NULL,$transaction->failURL)
+            ,$transaction->transaction_token
+            ,$paymentResult->Sonuc_Str);
     }
 
     private function calculatePrice($amount){

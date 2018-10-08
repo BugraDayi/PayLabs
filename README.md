@@ -1,12 +1,28 @@
-# PayLabs
 
-Such a good payment gateway
+# PayLabs  
+  
+Such a good payment gateway (working on Laravel 5.7)  
+  
+## Installation  
+  
+`composer require bugradayi/pay-labs`  
+  
+   you need to add PayLabs\ServiceProvider to your `config/app.php` providers array:  
+  
+    PayLabs\PayLabsServiceProvider::class 
 
-## Supported Payment Gateways
+also need to add PayLabs\Facades to your `config/app.php` aliases array:
 
-|        |Payment|Refund|Transfer
-|--------|-------|-----|----|
-|TurkPos |`Implemented`||`Coming Soon`
-|Iyzico  |`Coming Soon`||
+    'PayLabs' => PayLabs\Facades\PayLabs::class
 
+  
+  
+## Supported Payment Gateways  
+  
+|        |Payment|Refund|Transfer  
+|--------|-------|-----|----|  
+|TurkPos |`Implemented`||`Coming Soon`  
+|Iyzico  |`Coming Soon`||  
+|Garanti  |`Coming Soon`||  
+  
 > **Note:** Under developing therefore I don't suggest to use

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use PayLabs\Facades\PayLabs;
 use PayLabs\Models\CreditCard;
 use PayLabs\Models\Transaction;
+use PayLabs\Resources\PaymentResource;
 
 class PaymentController extends Controller
 {
@@ -34,8 +35,6 @@ class PaymentController extends Controller
             'successURL' => 'scs'
         ];
 
-        return [
-            'result' => PayLabs::makePayment($transaction,$creditCard,$urls)->getResult()
-        ];
+        return new PaymentResource(PayLabs::makePayment($transaction,$creditCard,$urls));
     }
 }
