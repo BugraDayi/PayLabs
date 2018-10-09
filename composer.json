@@ -12,7 +12,9 @@
         }
     ],
     "require": {
-      "artisaninweb/laravel-soap": "0.3.0.9"
+      "artisaninweb/laravel-soap": "0.3.0.9",
+      "guzzlehttp/guzzle": "^6.3",
+      "spatie/array-to-xml": "^2.7"
     },
   "autoload":{
     "psr-4":{

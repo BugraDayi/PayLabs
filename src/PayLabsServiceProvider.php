@@ -33,6 +33,11 @@ class PayLabsServiceProvider extends ServiceProvider
             'PaymentServices'
         );
 
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/default.php',
+            'NotificationServices'
+        );
+
         $this->app->bind('PayLabs', function () {
             return new PayLabs();
         });

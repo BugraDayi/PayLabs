@@ -36,7 +36,7 @@ class TurkTransferService implements TransferInterface
             $amount = $amount - ($amount * $commissionPercentage);
         }
 
-        $this->soapWrapper->add('Transfer', function ($service) {
+        $this->soapWrapper->add('DoTransfer', function ($service) {
             $service
                 ->wsdl($this->transferWSDL)
                 ->trace(true)
@@ -46,22 +46,20 @@ class TurkTransferService implements TransferInterface
                 ]);
         });
 
-        $transferResponse = $this->soapWrapper->call('Transfer.TL_Transfer', [
+        $transferResponse = $this->soapWrapper->call('DoTransfer.TL_Transfer', [
             new TL_Transfer($this->G, $cardNumber, $description, $amount)
         ]);
 
         if ($transferResponse->getTLTransferResult()->Sonuc == 1) {
 
             if (!is_null($transaction_token)) {
-                Transaction::where('transaction_token', $transaction_token)->update(['transferred', true]);
+                Transaction::where('transaction_token', $transaction_token)->update(['transferred' => true]);
             }
 
-            Transfer::create([
-                'card_number' => $cardNumber,
-                'description' => $description,
-                'amount' => $amount,
+            Transfer::where('transaction_token',$transaction_token)->update([
                 'transfer_token' => $transferResponse->getTLTransferResult()->Yukleme_Dekont_ID . '/' . $transferResponse->getTLTransferResult()->Harcama_Dekont_ID,
-                'transaction_token' => $transaction_token
+                'transferred' => 1,
+                'will_transfer' => 0
             ]);
             return new TransferResponse(true, $transaction_token);
         }

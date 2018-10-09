@@ -23,6 +23,7 @@ class Transaction extends Model
         'service_token',
         'ip'];
 
+    public $installment = 1;
 
     public function getFillable()
     {

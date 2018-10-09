@@ -17,8 +17,16 @@ class PaymentResource extends JsonResource
        return [
            'result' => $this->getResult(),
            'error' => $this->getError(),
-           'transaction_id' => $this->getTransactionId(),
+           'transaction_token' => $this->getTransactionId(),
            'redirectURL' => $this->getRedirectURL(),
        ];
+    }
+
+    public function result(){
+        return $this->getResult();
+    }
+
+    public function transactionToken(){
+        return $this->getTransactionId();
     }
 }

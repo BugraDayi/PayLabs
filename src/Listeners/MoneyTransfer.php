@@ -8,13 +8,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use PayLabs\Events\PaymentApproved;
 use Illuminate\Support\Facades\Log;
+use PayLabs\Facades\PayLabsTransfer;
 
 class MoneyTransfer implements ShouldQueue
 {
     use InteractsWithQueue;
 
     public $queue = 'money-transfer';
-
+    private $try = 5;
 
     public function __construct()
     {
@@ -23,16 +24,22 @@ class MoneyTransfer implements ShouldQueue
 
     public function handle(PaymentApproved $event)
     {
-        if($this->attempts() < 5){
+        $transferResponse = PayLabsTransfer::transfer(
+            $event->debitCard,
+            $event->transaction->description,
+            $event->transaction->amount,
+            $event->commissionPercentage,
+            $event->transaction->transaction_token
+            )->getResult();
 
-            if($this->attempts() == 4){
-                Log::info('Payment Approved');
-                $this->delete();
-            }else{
-                $this->release(10);
-            }
+        if($transferResponse){
+            $this->delete();
         }else{
-            $this->fail();
+           if($this->attempts() > $this->try){
+               $this->release();
+           }else{
+               $this->fail();
+           }
         }
     }
 }

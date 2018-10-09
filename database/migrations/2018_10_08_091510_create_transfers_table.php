@@ -20,6 +20,10 @@ class CreateTransfersTable extends Migration
             $table->string('transaction_token')->nullable();
             $table->string('transfer_token')->nullable();
             $table->decimal('amount',5,2);
+            $table->boolean('transferred')->default(0);
+            $table->boolean('will_transfer')->default(0);
+            $table->string('phone')->nullable();
+            $table->float('commission_percentage')->nullable();
             $table->timestamps();
         });
     }
