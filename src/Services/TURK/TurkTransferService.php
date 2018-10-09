@@ -8,7 +8,6 @@
 
 namespace PayLabs\Services\TURK;
 
-
 use Artisaninweb\SoapWrapper\SoapWrapper;
 use PayLabs\Models\Transaction;
 use PayLabs\Models\Transfer;
@@ -18,16 +17,13 @@ use PayLabs\Services\TURK\SOAP\TL_TransferResponse;
 use PayLabs\Transfer\TransferInterface;
 use PayLabs\Transfer\TransferResponse;
 
-
 class TurkTransferService implements TransferInterface
 {
-
     protected $transferWSDL;
     protected $soapWrapper;
     protected $G;
     protected $commissionPercentage;
     private $service;
-
 
     public function __construct()
     {

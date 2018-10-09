@@ -121,7 +121,7 @@ class TurkPaymentService implements PaymentInterface
         ]);
     }
 
-    private function getOran(){
+    private function getCommisionPercentage(){
         $this->soapWrapper->add('Payment', function ($service) {
             $service
                 ->wsdl("https://dmzws.ew.com.tr/turkpos.ws/service_turkpos_prod.asmx?wsdl")

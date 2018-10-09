@@ -14,4 +14,5 @@ $defaultOptions = [
 
 Route::group($defaultOptions,function () {
     Route::get('pay', 'PaymentController@pay');
+    Route::get('approve', 'PaymentController@approve');
 });

@@ -14,6 +14,10 @@ Such a good payment gateway (working on Laravel 5.7)
 also need to add PayLabs\Facades to your `config/app.php` aliases array:
 
     'PayLabs' => PayLabs\Facades\PayLabs::class
+    
+Finally to register events
+
+    composer dump-autoload -o
 
   
 ## Supported Payment Gateways  

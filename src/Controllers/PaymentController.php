@@ -4,6 +4,7 @@ namespace PayLabs\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use PayLabs\Events\PaymentApproved;
 use PayLabs\Facades\PayLabs;
 use PayLabs\Models\CreditCard;
 use PayLabs\Models\Transaction;
@@ -22,8 +23,6 @@ class PaymentController extends Controller
         $transaction->user_token = "test_token";
         $transaction->ip = $request->ip();
 
-        $creditCard = new CreditCard();
-
 
         $urls = [
             'paymentURL' => 'test',
@@ -32,5 +31,13 @@ class PaymentController extends Controller
         ];
 
         return new PaymentResource(PayLabs::makePayment($transaction,$creditCard,$urls));
+    }
+
+    public function approve(){
+
+        event(new PaymentApproved(Transaction::first()));
+        return [
+            'Approve' => true
+        ];
     }
 }

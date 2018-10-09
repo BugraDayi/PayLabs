@@ -26,6 +26,8 @@ class PayLabsServiceProvider extends ServiceProvider
 
     public function register(){
 
+        $this->app->register(PayLabsEventServiceProvider::class);
+
         $this->mergeConfigFrom(
             __DIR__ . '/../config/config.php',
             'PaymentServices'
