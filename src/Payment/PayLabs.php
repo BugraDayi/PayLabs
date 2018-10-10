@@ -29,18 +29,18 @@ class PayLabs
         $this->createTransaction($transaction, $creditCard->holder, $creditCard->number);
         $this->addURL($urls, $transaction);
 
-        //try {
+        try {
             $paymentResponse = $this->paymentService->pay($transaction, $creditCard);
             if ($paymentResponse->getResult() == true && $creditCard->save == true) {
                 $creditCard->save();
             }
 
             return $paymentResponse;
-//        } catch (\Throwable $exception) {
-//            Transaction::where('transaction_token',$transaction->transaction_token)->update(['approve_token' => Hash::make($transaction->approve_token)]);
-//            return new PaymentResponse(false,$transaction->failURL,$transaction->transaction_token
-//                ,'General payment service error Service:'.$this->paymentServiceName);
-//        }
+        } catch (\Throwable $exception) {
+            Transaction::where('transaction_token',$transaction->transaction_token)->update(['approve_token' => Hash::make($transaction->approve_token)]);
+            return new PaymentResponse(false,$transaction->failURL,$transaction->transaction_token
+                ,'General payment service error Service:'.$this->paymentServiceName);
+        }
     }
 
     private function createTransaction($transaction, $holder, $digits)
